@@ -1,7 +1,7 @@
 package com.moonchild.domain;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,57 +9,58 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.JoinColumn;
+import javax.transaction.Transactional;
 
 @Entity
-@Table(name="team",schema="public")
-public class Team {
+@Table(name="school_class",schema="public")
+public class SchoolClass {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "team_id")
+	@Column(name = "class_id")
 	private Integer id;
 	
-	@Column(name = "name", nullable = false)
+	@Column(name = "name", length=25, nullable = false)
 	private String name;
 	
-	@OneToMany(mappedBy="class_id",
+	@OneToMany(
+			mappedBy="class_id",
 			fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE,
-                    CascadeType.REMOVE})
+            cascade = { CascadeType.ALL }
+	)
 	private List<Student> children;
 	
-	@ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE,
-                    CascadeType.REMOVE})
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(
-	  name = "team_teacher", 
-	  joinColumns = @JoinColumn(name = "team_id"), 
-	  inverseJoinColumns = @JoinColumn(name = "teacher_id"))
-	private List<Teacher> professors;
+		name = "class_teacher", 
+		joinColumns = { @JoinColumn(name = "class_id", updatable=true) }, 
+		inverseJoinColumns = { @JoinColumn(name = "teacher_id", updatable=true) })
+	private List<Teacher> teachers = new ArrayList<Teacher>();
 
-	public Team() {
+	public SchoolClass() {
 		super();
 	}
-
-	public Team(Integer id, String name, List<Student> children, List<Teacher> professors) {
+	
+	public SchoolClass(Integer id, String name, List<Student> children, List<Teacher> teachers) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.children = children;
-		this.professors = professors;
+		this.teachers = teachers;
 	}
 
-	public Team(Integer id, String name) {
+	public SchoolClass(Integer id, String name) {
 		super();
 		this.id = id;
+		this.name = name;
+	}
+	
+	public SchoolClass(String name) {
+		super();
 		this.name = name;
 	}
 
@@ -87,17 +88,18 @@ public class Team {
 		this.children = children;
 	}
 
-	public List<Teacher> getProfessors() {
-		return professors;
+	public List<Teacher> getTeachers() {
+		return teachers;
 	}
 
-	public void setProfessors(List<Teacher> professors) {
-		this.professors = professors;
+	public void setTeachers(List<Teacher> teachers) {
+		this.teachers = teachers;
 	}
 
 	@Override
 	public String toString() {
-		return "Team [id=" + id + ", name=" + name + ", children=" + children + ", professors=" + professors + "]";
+		return "SchoolClass [id=" + id + ", name=" + name + ", children=" + children + ", teachers=" + teachers
+				+ "]";
 	}
 	
 }

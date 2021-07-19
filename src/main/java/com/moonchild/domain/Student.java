@@ -8,10 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
-@Table(name="student",schema="public")
 public class Student {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,14 +26,14 @@ public class Student {
 	private String responsible;
 	
 	@ManyToOne
-    @JoinColumn(name="class_id", nullable=false)
-	private Team class_id;
+    @JoinColumn(name="class_id")
+	private SchoolClass class_id;
 	
 	public Student() {
 		super();
 	}
 
-	public Student(Integer id, String name, Date birth_date, String responsible, Team class_id) {
+	public Student(Integer id, String name, Date birth_date, String responsible, SchoolClass class_id) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -84,11 +82,11 @@ public class Student {
 		this.responsible = responsible;
 	}
 
-	public Team getClass_id() {
+	public SchoolClass getClass_id() {
 		return class_id;
 	}
 
-	public void setClass_id(Team class_id) {
+	public void setClass_id(SchoolClass class_id) {
 		this.class_id = class_id;
 	}
 
