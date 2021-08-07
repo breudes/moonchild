@@ -50,7 +50,7 @@ public class StudentService {
 		}
 	}
 	
-	public Optional<Student> acessOneStudent(Integer idStudent) {
+	public Optional<Student> accessOneStudent(Integer idStudent) {
 		Optional<Student> student = Optional.of(studentRepository.getById(idStudent));
 		if(student.isPresent()) {
 			return student;
@@ -59,7 +59,7 @@ public class StudentService {
 		}
 	}
 	
-	public List<Student> acessAllStudents(){
+	public List<Student> accessAllStudents(){
 		return studentRepository.findAll();
 	}
 	

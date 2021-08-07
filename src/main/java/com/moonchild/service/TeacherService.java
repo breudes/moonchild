@@ -1,6 +1,5 @@
 package com.moonchild.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.moonchild.domain.SchoolClass;
 import com.moonchild.domain.Teacher;
-import com.moonchild.repository.SchoolClassRepository;
 import com.moonchild.repository.TeacherRepository;
 
 @Service
@@ -47,14 +45,7 @@ public class TeacherService {
 			Teacher teacher = teacherRepository.getById(idTeacher);
 			
 			if( teacher != null ) {
-				int classesSize = teacher.getClasses().size();
-				for(int i=0; i<classesSize; i++) {
-					SchoolClass schoolClass = schoolClassService.accessOneClass(teacher.getClasses().get(i).getId());
-					
-					if(!schoolClass.equals(null)) {
-						schoolClass.getTeachers().remove(teacher);
-					}
-				}
+				removeAllSchoolClassesFromTeacher(teacher);
 			}
 			
 			teacherRepository.deleteById(idTeacher);
@@ -71,20 +62,11 @@ public class TeacherService {
 				teacher.setName(newTeacher.getName());
 				teacher.setBirth_date(newTeacher.getBirth_date());
 				teacher.setTaught_subject(newTeacher.getTaught_subject());
+			
+				removeAllSchoolClassesFromTeacher(teacher);
+				addAllSchoolClassesFromTeacher(newTeacher);
 				
-				List<SchoolClass> newList = new ArrayList<SchoolClass>();
-				teacher.setClasses(new ArrayList<SchoolClass>());
-				
-				int classesSize = newTeacher.getClasses().size();
-				for(int i=0; i<classesSize; i++) {
-					SchoolClass schoolClass = schoolClassService.accessOneClass(newTeacher.getClasses().get(i).getId());
-					schoolClass.setTeachers(new ArrayList<Teacher>());
-					
-					if(!schoolClass.equals(null)) {
-						schoolClass.getTeachers().add(teacher);
-						teacher.addSchoolClass(schoolClass);
-					}
-				}
+				teacher.setClasses(newTeacher.getClasses());
 			}
 			
 			teacherRepository.save(teacher);
@@ -94,11 +76,10 @@ public class TeacherService {
 		}
 	}
 	
-	public Teacher acessOneTeacher(Integer idTeacher) {
-		Optional<Teacher> teacher = Optional.of(teacherRepository.getById(idTeacher));
-		
+	public Optional<Teacher> accessOneTeacher(Integer idTeacher) {		
+		Optional<Teacher> teacher = teacherRepository.findById(idTeacher);
 		if(teacher.isPresent()) {
-			return teacher.get();
+			return teacher;
 		}else {
 			throw new IllegalStateException();
 		}
@@ -108,8 +89,23 @@ public class TeacherService {
 		return teacherRepository.findAll();
 	}
 	
-	/*public List<Teacher> findTeachersByClasses(Integer classId){
-		return teacherRepository.findAllByClasses(classId);
-	}*/
+	public void removeAllSchoolClassesFromTeacher(Teacher teacher) {
+		teacher.getClasses().forEach(object -> {
+			SchoolClass schoolClass = schoolClassService.accessOneClass(object.getId());
+			if(!schoolClass.equals(null)) {
+				schoolClass.getTeachers().remove(teacher);
+			}
+		});
 		
+		teacher.setClasses(null);
+	}
+	
+	public void addAllSchoolClassesFromTeacher(Teacher teacher) {
+		teacher.getClasses().forEach(object -> {
+			SchoolClass schoolClass = schoolClassService.accessOneClass(object.getId());
+			if(!schoolClass.equals(null)) {
+				schoolClass.getTeachers().add(teacher);
+			}
+		});
+	}
 }

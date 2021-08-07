@@ -14,7 +14,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.transaction.Transactional;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="school_class",schema="public")
@@ -32,6 +33,7 @@ public class SchoolClass {
 			fetch = FetchType.LAZY,
             cascade = { CascadeType.ALL }
 	)
+	@JsonIgnoreProperties("class_id")
 	private List<Student> children;
 	
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -39,6 +41,7 @@ public class SchoolClass {
 		name = "class_teacher", 
 		joinColumns = { @JoinColumn(name = "class_id", updatable=true) }, 
 		inverseJoinColumns = { @JoinColumn(name = "teacher_id", updatable=true) })
+	@JsonIgnoreProperties("classes")
 	private List<Teacher> teachers = new ArrayList<Teacher>();
 
 	public SchoolClass() {

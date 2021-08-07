@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 public class Teacher {
@@ -30,6 +31,7 @@ public class Teacher {
 	private String taught_subject;
 	
 	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "teachers")
+	@JsonIgnoreProperties("teachers")
 	private List<SchoolClass> classes = new ArrayList<SchoolClass>();
 
 	public Teacher() {

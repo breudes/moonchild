@@ -60,6 +60,26 @@ public class MoonchildController {
 		}
 	}
 	
+	@GetMapping("/teacher/get/{id}")
+	public Optional<Teacher> getOneTeacher(@PathVariable Integer id) {
+		try {
+			return teacherService.accessOneTeacher(id);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@GetMapping("/teacher/getAll")
+	public List<Teacher> getAllTeachers(){
+		try {
+			return teacherService.accessAllTeachers();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@PostMapping("/student/save")
 	public void saveStudent(@RequestBody Student student) throws Exception {
 		try {
@@ -90,7 +110,7 @@ public class MoonchildController {
 	@GetMapping("/student/get/{id}")
 	public Optional<Student> getOneStudent(@PathVariable Integer id) {
 		try {
-			return studentService.acessOneStudent(id);
+			return studentService.accessOneStudent(id);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -100,7 +120,7 @@ public class MoonchildController {
 	@GetMapping("/student/getAll")
 	public List<Student> getAllStudents(){
 		try {
-			return studentService.acessAllStudents();
+			return studentService.accessAllStudents();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
