@@ -2,7 +2,6 @@ package com.moonchild.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,13 +29,12 @@ public class SchoolClass {
 	
 	@OneToMany(
 			mappedBy="class_id",
-			fetch = FetchType.LAZY,
-            cascade = { CascadeType.ALL }
+			fetch = FetchType.LAZY
 	)
 	@JsonIgnoreProperties("class_id")
-	private List<Student> children;
+	private List<Student> children = new ArrayList<Student>();
 	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 		name = "class_teacher", 
 		joinColumns = { @JoinColumn(name = "class_id", updatable=true) }, 
@@ -97,6 +95,14 @@ public class SchoolClass {
 
 	public void setTeachers(List<Teacher> teachers) {
 		this.teachers = teachers;
+	}
+	
+	public void addChild(Student student) {
+		this.children.add(student);
+	}
+	
+	public void removeChild(Student student) {
+		this.children.remove(student);
 	}
 
 	@Override

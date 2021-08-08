@@ -1,12 +1,9 @@
 package com.moonchild.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +29,53 @@ public class MoonchildController {
 	private TeacherService teacherService;
 	@Autowired
 	private SchoolClassService schoolClassService;
+	
+	@PostMapping("/schoolclass/save")
+	public void saveSchoolClass(@RequestBody SchoolClass schoolClass) throws Exception {
+		try {
+			schoolClassService.saveSchoolClass(schoolClass);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@PutMapping("/schoolclass/update/{id}")
+	public void updateSchoolClass(@PathVariable Integer id,@RequestBody SchoolClass schoolClass) {
+		try {
+			schoolClassService.updateSchoolClass(id, schoolClass);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@DeleteMapping("/schoolclass/delete/{id}")
+	public void deleteSchoolClass(@PathVariable("id") Integer id) throws Exception {
+		try {
+			schoolClassService.deleteSchoolClass(id);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@GetMapping("/schoolclass/get/{id}")
+	public Optional<SchoolClass> getOneSchoolClass(@PathVariable Integer id) {
+		try {
+			return schoolClassService.accessOneClass(id);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@GetMapping("/schoolclass/getAll")
+	public List<SchoolClass> getAllSchoolClasses(){
+		try {
+			return schoolClassService.listAllClasses();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	@PostMapping("/teacher/save")
 	public void saveTeacher(@RequestBody Teacher teacher) throws Exception {

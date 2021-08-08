@@ -25,11 +25,11 @@ public class TeacherService {
 		try {
 			int classesSize = newTeacher.getClasses().size();
 			for(int i=0; i<classesSize; i++) {
-				SchoolClass schoolClass = schoolClassService.accessOneClass(newTeacher.getClasses().get(i).getId());
+				Optional<SchoolClass> schoolClass = schoolClassService.accessOneClass(newTeacher.getClasses().get(i).getId());
 				
 				if(!schoolClass.equals(null)) {
-					schoolClass.getTeachers().add(newTeacher);
-					newTeacher.addSchoolClass(schoolClass);
+					schoolClass.get().getTeachers().add(newTeacher);
+					newTeacher.addSchoolClass(schoolClass.get());
 				}
 			}
 			teacherRepository.save(newTeacher);
@@ -91,9 +91,9 @@ public class TeacherService {
 	
 	public void removeAllSchoolClassesFromTeacher(Teacher teacher) {
 		teacher.getClasses().forEach(object -> {
-			SchoolClass schoolClass = schoolClassService.accessOneClass(object.getId());
+			Optional<SchoolClass> schoolClass = schoolClassService.accessOneClass(object.getId());
 			if(!schoolClass.equals(null)) {
-				schoolClass.getTeachers().remove(teacher);
+				schoolClass.get().getTeachers().remove(teacher);
 			}
 		});
 		
@@ -102,9 +102,9 @@ public class TeacherService {
 	
 	public void addAllSchoolClassesFromTeacher(Teacher teacher) {
 		teacher.getClasses().forEach(object -> {
-			SchoolClass schoolClass = schoolClassService.accessOneClass(object.getId());
+			Optional<SchoolClass> schoolClass = schoolClassService.accessOneClass(object.getId());
 			if(!schoolClass.equals(null)) {
-				schoolClass.getTeachers().add(teacher);
+				schoolClass.get().getTeachers().add(teacher);
 			}
 		});
 	}
