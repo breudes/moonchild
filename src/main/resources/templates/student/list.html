@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="fragments/layout">
+	
+	<head>
+		<title>List of Students</title>
+	</head>
+	
+	<body>
+		<div layout:fragment="content">
+			<table class="table">
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th scope="col">Name</th>
+			      <th scope="col">Responsible</th>
+			      <th scope="col">Class Name</th>
+			      <th scope="col">Options</th>
+			    </tr>
+			  </thead>
+			  
+			  <tbody>
+			  	<tr th:if="${studentsList == null}">
+			  		<td>
+			  			There is not any students available.
+			  		</td>
+			  	</tr>
+			  	
+			    <tr th:each="student, index : ${studentsList}" >
+			      <th scope="row" th:text="${index.index+1}">A</th>
+			      <td th:text="${student.name}"></td>
+			      <td th:text="${student.responsible}"></td>
+			      
+			      <td th:if="${student.class_id != null}" th:text="${student.class_id.name}"></td>
+			      <td th:if="${student.class_id == null}" th:text="Empty"></td>
+			      
+			      <td>
+			      	<div class="row">Edit</div>
+			      	<div class="row">Remove</div>
+			      </td>
+			    </tr>
+			    
+			  </tbody>
+			</table>
+		</div>
+	</body>
+</html>

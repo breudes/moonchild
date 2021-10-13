@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.moonchild.controller.rest.StudentController;
 import com.moonchild.domain.SchoolClass;
 import com.moonchild.domain.Student;
 import com.moonchild.domain.Teacher;
@@ -20,10 +23,73 @@ import com.moonchild.service.SchoolClassService;
 import com.moonchild.service.StudentService;
 import com.moonchild.service.TeacherService;
 
-@RestController
+@Controller
 @RequestMapping("moonchild")
 public class MoonchildController {
 	@Autowired
+	private StudentController studentController;
+	
+	@GetMapping("/student/list")
+	public ModelAndView listStudents() {
+		
+		ModelAndView model = new ModelAndView();
+		model.setViewName("student/list");
+		model.addObject("studentsList", studentController.getAllStudents());
+		
+		return model;
+	}
+	
+	@GetMapping("/student/delete/{id}")
+	public ModelAndView deleteStudent(@PathVariable Integer id) {
+		
+		try {
+			studentController.deleteStudent(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return listStudents();
+	}
+	
+	@GetMapping("/student/update/{id}")
+	public ModelAndView updateStudent(@PathVariable Integer id, @RequestBody Student student) {
+		
+		try {
+			studentController.updateStudent(id, student);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return listStudents();
+	}
+	
+	@GetMapping("/student/form")
+	public ModelAndView formStudent(ModelAndView model) {
+		
+		Student student = new Student();
+		
+		model.setViewName("student/form");
+		model.addObject("student", student);
+		
+		return model;
+	}
+	
+	@PostMapping("/student/save")
+	public ModelAndView saveStudent(ModelAndView model, @RequestBody Student student) {
+		
+		try {
+			studentController.saveStudent(student);
+			return listStudents();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		model.addObject("student", student);
+		
+		return formStudent(model);
+	}
+	
+	/*@Autowired
 	private StudentService studentService;
 	@Autowired
 	private TeacherService teacherService;
@@ -169,5 +235,5 @@ public class MoonchildController {
 			e.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 }
